@@ -1,0 +1,15 @@
+{
+	"name": "df-azureproject-anki",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "712e1ef6-17cf-4388-8876-d4be9af8be1e",
+		"tenantId": "a62ca882-0273-4ea8-aea5-9d74e55d68da"
+	}
+}
