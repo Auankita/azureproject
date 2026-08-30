@@ -68,7 +68,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "bronze",
-							"folder": "users",
+							"folder": {
+								"value": "@pipeline().parameters.table",
+								"type": "Expression"
+							},
 							"file": {
 								"value": "@concat(pipeline().parameters.table,'_',variables('current'))",
 								"type": "Expression"
@@ -131,7 +134,7 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "IfIncrementalData",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -143,13 +146,52 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('azuresqltolake').output.dataRead,0)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "DeleteEmptyFiles",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "Parquet_dynamic",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@pipeline().parameters.table",
+											"type": "Expression"
+										},
+										"file": "@concat(pipeline().parameters.table,'_',variables('current'))"
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
-							"name": "last_updated_cdc_copy1",
+							"name": "last_updated_cdc",
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "max_cdc_copy1",
+									"activity": "max_cdc",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -219,7 +261,7 @@
 							]
 						},
 						{
-							"name": "max_cdc_copy1",
+							"name": "max_cdc",
 							"type": "Script",
 							"dependsOn": [],
 							"policy": {
