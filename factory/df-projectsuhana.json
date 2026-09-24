@@ -1,0 +1,15 @@
+{
+	"name": "df-projectsuhana",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "9bf768e5-406a-4ef2-81e6-bbd2a0a7f9f6",
+		"tenantId": "210fa69e-a199-44ba-b8ea-f985dd834c4e"
+	}
+}
